@@ -1,0 +1,33 @@
+Share Science with Sheets for Google Sheets™ (sCubed)
+Copyright 2023 Abigail Elizabeth
+Licensed under the Apache License, Version 2.0
+
+Acknowledge us
+----------------------
+If you use the codebase for sCubed, you must acknowledge 
+the codebase for sCubed where appropriate by using the 
+following citation:
+
+Elizabeth, A. (2023). Share Science with Sheets for Google 
+Sheets™. Zenodo. https://doi.org/10.5281/zenodo.10023512
+
+Where possible, acknowledge that sCubed was supported by
+the National Institutes of Health Common Fund Stage 2 
+Metabolomics Consortium award 1U2CDK119889-01 and the 
+National Science Foundation Network for Advanced NMR 
+subawards UCHC7-145356947 and UCHC7-145356947-A1 of 
+prime award 1946970.
+
+Third-party resources
+----------------------
+
+This product depends on software developed by the OpenJS 
+Foundation and other contributors (https://openjsf.org/)
+released under the MIT License.
+
+This product depends on software developed by The Bootstrap 
+Authors (https://getbootstrap.com/) released under the MIT 
+License.
+
+This product was developed with code samples developed by
+Google LLC released under the Apache 2.0 License.
