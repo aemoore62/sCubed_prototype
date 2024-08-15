@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= HtmlService.createHtmlOutputFromFile('style_sheet').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('feature_output_js').getContent(); ?>
+  </head>
+<body>
+  <h2>About</h2>
+  Share Science with Sheets (sCubed) is a spreadsheet applicationt that enables researchers to capture information about
+  how scientific experiments were conducted.
+  <br>
+  <br>
+  <button type="button" class="collapsible">Configure sCubed</button>
+  <div class="warning">
+  Start by configuring the sCubed forms.
+  Navigate to the sCubed menu and then navigate to the item <i>Configure forms</i>.
+  <ol type="1">
+    <li>Create the core sCubed Sheets. Select <i> 1. Create core forms</i></li>
+    <li>Choose whether you want to summarize the provenance of physical material or describe individual activities.
+      Then, select <b>either</b>
+      <i>2A. Enable summaries</i> or <i>2B. Enable activities</i>.
+    </li>
+    <li>Add columns that are relevant to your context. Select <i>3. Add context packages</i> and then complete the form.
+    </li>
+    <li>Add data validation and formatting to core sheets. Select <i>4. Apply core validation</i>.</li>
+    <li>Add data validation and formatting to activity sheet. Select <i>5. Apply activity validation</i>.</li>
+    <li>Install the onEdit trigger to enable the dynamic responses to your edits. Select <i>Install onEdit trigger</i>.
+    </li>
+  </ol>
+  </div>
+  <br>
+  <br>
+
+
+  <button type="button" class="collapsible">sCubed sheets</button>
+  <div class="warning">
+    <b>conceptDefinition</b> Text.
+    <br>
+    <b>materialDefinition</b> Text.
+    <br>
+    <b>processDefinition</b> Text.
+    <br>
+    <b>workflowManagement</b> Text.
+    <br>
+    <b>processExecution</b> Text.
+
+  </div>  
+
+
+
+  <h2>Resources</h2>
+  Read our tutorial and learn more about sCubed on <a href="https://scubed-docs.readthedocs.io/en/latest/index.html"
+    target="_blank">Read the Docs</a>.
+  <br>
+  <br>
+
+    Contribute to sCubed via <a href="https://github.com/aemoore62/scubed_community" target="_blank">GitHub</a>.
+
+</body>
+
+</html>
+
+<script type='text/javascript'>
+
+let collapsibleElements = document.getElementsByClassName("collapsible");
+
+for (var collapsibleElementIndex = 0; collapsibleElementIndex < collapsibleElements.length; collapsibleElementIndex++) {
+  collapsibleElements[collapsibleElementIndex].addEventListener("click", function() {
+    this.classList.toggle("active");
+    let warning = this.nextElementSibling;
+
+    if (warning.style.display == "block") {
+      warning.style.display = "none";
+
+    } else {
+      warning.style.display = "block";
+    }
+  });
+
+}
+</script>

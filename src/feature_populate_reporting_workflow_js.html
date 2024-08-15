@@ -1,0 +1,257 @@
+<script type='text/javascript'>
+  function dynamicallyPopulateLists(newWorkflowOptions){      
+  //document.getElementById('loadingReportingWorkflows').style.display='none'
+  //removeListOptions(document.getElementById("dynamicallyPopulateLists"));
+
+  // get select element
+    var workflowSelect = document.getElementById("reportingWorkflow");
+
+  for (newWorkflowIndex = 0; newWorkflowIndex < newWorkflowOptions.length; newWorkflowIndex++){
+  
+  if (newWorkflowOptions[newWorkflowIndex] != '' && 
+  newWorkflowOptions[newWorkflowIndex] != null && 
+  newWorkflowOptions[newWorkflowIndex] != undefined) {
+    
+   
+    // create an additional workflow
+    var newOption = document.createElement("option");
+    
+    // add option
+    newOption.value = newWorkflowOptions[newWorkflowIndex];
+    newOption.innerHTML = newWorkflowOptions[newWorkflowIndex];
+     workflowSelect.appendChild(newOption);
+
+  } 
+    
+  }
+
+  }
+  
+</script>
+
+<script type='text/javascript'>
+  function displayReportingWorkflowSteps() {
+  var reportingWorkflowName = document.getElementById("reportingWorkflow").value;
+  
+  google.script.run
+  .withSuccessHandler(displayWorkflowSteps)
+  .passInputData(reportingWorkflowName);
+
+};
+
+function displayWorkflowSteps(workflowSteps) { 
+  //document.getElementById('loadingReportingWorkflowSteps').style.display='none';   
+  //removeListOptions(document.getElementById("workflowStepDivSelect"));
+
+  for (workflowStepIndex = 0; workflowStepIndex < workflowSteps.length; workflowStepIndex++){
+      daySelect = document.getElementById("workflowStepDivSelect");
+      var newOption = document.createElement("option");
+      newOption.text = workflowSteps[workflowStepIndex];
+      newOption.value = workflowSteps[workflowStepIndex];
+      daySelect.appendChild(newOption);
+    
+  }
+  
+};
+
+</script>
+
+<script type='text/javascript'>
+  function displayUserDefinedIDFields() {
+  // add new div to existing div to display ids
+  parentDiv = document.getElementById("userCreatedIDsDiv");  
+  newDiv = document.createElement("div");
+  newDiv.setAttribute("id", "inputChild");
+  parentDiv.appendChild(newDiv);
+  let numberInstances = 1   
+
+    for (userDefinedIDIndex = 0; userDefinedIDIndex < numberInstances; userDefinedIDIndex++) {
+      parentDiv = document.getElementById("userCreatedIDsDiv");
+
+      // make label
+      label = document.createElement("label");
+      let workflowInstanceNumber = userDefinedIDIndex+1
+      label.setAttribute("id", "userID"+workflowInstanceNumber);
+      
+      // basename field
+      baseNameInput = document.createElement("input");
+      baseNameInput.setAttribute("id", "input_"+userDefinedIDIndex);   
+      baseNameInput.classList.add("userDefinedID_base");      
+      baseNameInput.classList.add("custom-text"); 
+      baseNameInput.setAttribute("size","14");  
+      parentDiv.appendChild(baseNameInput);
+      parentDiv.appendChild(document.createTextNode("\u0009"));
+      
+      // start field
+      startField = document.createElement("input");
+      startField.setAttribute("id", "start_"+userDefinedIDIndex);   
+      startField.classList.add("userDefinedID_start"); 
+      startField.classList.add("custom-text");   
+      startField.setAttribute("size","4");    
+      parentDiv.appendChild(startField);
+      parentDiv.appendChild(document.createTextNode("\u0009"));
+      
+      // end field
+      endField = document.createElement("input");
+      endField.setAttribute("id", "end_"+userDefinedIDIndex);   
+      endField.classList.add("userDefinedID_end");  
+      endField.classList.add("custom-text");   
+      endField.setAttribute("size","4");        
+      parentDiv.appendChild(endField);
+      parentDiv.appendChild(document.createElement("br"));
+  }
+  
+  //document.getElementById("instancesDiv").style.display = 'block';   
+  document.getElementById("userInputReportingWorkflowName").style.display = 'block'; 
+  document.getElementById("userCreatedIDsDiv").style.display = 'block'; 
+  document.getElementById("done_id_input").style.display = 'block';
+
+    }
+
+</script>
+
+<script type='text/javascript'>
+  function displayWorkflowIDsDiv() {
+  // get user-defined IDs
+  var values = [];
+  var ids = document.getElementsByClassName("userDefinedID_base"); 
+  let workflowName = document.getElementById("reportingWorkflow").value; 
+  document.getElementById("autoGenIDText").innerHTML = ids;
+
+  // date to append to name
+  let newDate = new Date()
+  let date = newDate.toISOString().split('T')[0]
+  let timeWithZone = newDate.toISOString().split('T')[1]
+  let timeWithoutZone = timeWithZone.split('.').shift()
+  let dateTime = date+' '+timeWithoutZone
+  var currentRowValues = [];
+  var currentBatchValues = [];  
+ 
+  for (idIndex = 0; idIndex < ids.length; idIndex++) {    
+    document.getElementById("autoGenIDText").innerHTML = values;
+    var term = document.getElementsByClassName('userDefinedID_base')[idIndex].value;   
+    var start = document.getElementsByClassName('userDefinedID_start')[idIndex].value;
+    var end = document.getElementsByClassName('userDefinedID_end')[idIndex].value;
+
+    for (userDefinedSuffixIndex = start; userDefinedSuffixIndex <= end; userDefinedSuffixIndex++) {
+      currentRowValues = [];
+      // make id
+      var base = term.concat(userDefinedSuffixIndex);
+      var instanceID = base.concat(","+workflowName+","+dateTime)     
+      values.push(instanceID);
+
+      // push all values into one row for single ID
+      currentRowValues.push(base);
+      currentRowValues.push(workflowName);
+      currentRowValues.push(dateTime);
+      currentRowValues.push('');//activeUserName
+      currentRowValues.push(1);   
+
+      // push all ids into one array
+      currentBatchValues.push(currentRowValues); 
+    }
+
+  }        
+  
+  document.getElementById("autoGenIDText").innerHTML = values.join('<br> ');
+  document.getElementById("autoGenID").style.display = 'block';
+  //document.getElementById("autoGenID").innerHTML =ids[0].value;
+ 
+};
+</script>
+
+<script type='text/javascript'>
+  function displayProcessSpecificationContent() {
+
+  handleProcessIDs();
+  var processSpecificationSelect = document.getElementById("processSpecificationDiv");
+ processSpecificationSelect.style.display = "block";
+
+}
+
+function handleProcessIDs() {
+
+  var reportingWorkflowName = document.getElementById("reportingWorkflow").value;
+  google.script.run
+    .withSuccessHandler(displayWorkflowProcessIDs)
+    .getProcessSpecificationNames(reportingWorkflowName);
+
+}
+
+function displayWorkflowProcessIDs(workflowSteps) {  
+  
+  //removeListOptions(document.getElementById("processSpecification"));
+  var workflowSteps = [... new Set(workflowSteps)]
+
+  for (workflowStepIndex = 0; workflowStepIndex < workflowSteps.length; workflowStepIndex++) {
+    processSpecifications = document.getElementById("processSpecification");
+    var newProcssSpecification = document.createElement("option");
+    newProcssSpecification.text = workflowSteps[workflowStepIndex];
+    newProcssSpecification.value = workflowSteps[workflowStepIndex];
+    processSpecifications.appendChild(newProcssSpecification);
+    
+  }
+  
+};
+
+</script>
+
+<script type='text/javascript'>
+  function callToSetReportingWorkflowProcSpecInSheets() {
+    //var workflowInstanceIDsSplit = document.getElementById("existingWorkflowSelect").value;    
+    //document.getElementById("autoGenIDText").innerHTML = workflowInstanceIDsSplit;
+    //if (workflowInstanceIDsSplit == "none") {         
+      var workflowInstanceIDs = document.getElementById("autoGenIDText").innerHTML;    
+      var workflowInstanceIDsSplit = workflowInstanceIDs.split("<br> ");
+      //var workflowName = document.getElementById("newWorkflowSelect").value;
+      var numberInstances= workflowInstanceIDsSplit.length
+/*
+    } else {      
+      var workflowInstanceIDsSplit = [document.getElementById("existingWorkflowSelect").value]; 
+      var element = document.getElementById("addNewWorkflowInstanceFields");
+      document.getElementById("container").innerHTML = "hello"
+      var numberOfChildren  = document.getElementsByClassName("anotherWorkflowInstance").length; 
+      document.getElementById("container").innerHTML = "numberOfChildren: "+numberOfChildren
+      var numberInstances= numberOfChildren+1;
+
+    }
+    */
+    // Get process types for steps
+    var lastStep = document.getElementById("workflowStepDivSelect").value;    
+   //var populateInvestigator = document.getElementById("doAutoPopulateInvestigator").checked
+    var populateDate = document.getElementById("autoPopulateDate").checked
+    //  let optionNames = [...selectElement.options].map(o => o.text);
+    var workflowStepOptions = document.getElementById('workflowStepDivSelect').options;
+    
+     var allSteps = [];
+     for (var i = 1; i < workflowStepOptions.length; i++) { // start at 1 to skip default value
+         allSteps.push(workflowStepOptions[i].value) 
+      }
+    
+    var stopIndex = allSteps.indexOf(lastStep);
+    var instanceSteps = [];
+    var stepNumbers = [];    
+    for (var i = 0;i< stopIndex+1; i++) {
+      let stepNumberProcessType = allSteps[i]
+      let processType = stepNumberProcessType.split(',')[1];
+      let stepNumber = stepNumberProcessType.split(',')[0];
+      instanceSteps.push([processType]);
+      stepNumbers.push([stepNumber]);
+    }
+
+    // Get process IDs for steps       
+    var populateProcessIDs = document.getElementById("autoPopulateProcessIDs").checked
+    if (populateProcessIDs) {
+      var processSpecificationName = document.getElementById("processSpecification").value; 
+   
+    }
+    
+    //document.getElementById("autoGenIDText").innerHTML = "workflowInstanceIDs: "+workflowInstanceIDs;
+
+       google.script.run
+      //.withSuccessHandler(google.script.host.close)
+      .setWorkflowManagementEntitiesInProcessExecution(workflowInstanceIDsSplit,instanceSteps,stepNumbers,numberInstances,populateDate,processSpecificationName );   //populateInvestigator,
+
+  };
+
+</script>

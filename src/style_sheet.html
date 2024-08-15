@@ -1,0 +1,259 @@
+<style>
+  * {
+	box-sizing: border-box;
+}
+
+body {
+	font-family: Arial;
+	background: #f0f2f7;
+  font-size: 14px;
+}
+
+.warning {
+	font-family: Arial;
+	background: #ffffff;
+  font-size: 14px;
+  border: 1px solid #ddd;
+	border-radius: 10px;
+  padding: 10px 10px;
+  display: none;
+
+}
+
+div{
+   margin-bottom:10px;
+}
+
+.custom-text {
+	padding: 4px;
+	color: #000000;
+	border: #ddd;
+	outline: none;
+}
+
+.container2 {
+	display: flex;
+  justify-content: start;
+  flex-wrap:wrap;
+	top: 50%;
+	left: 50%;
+	
+}
+
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.copy-text {
+	position: relative;
+	padding: 10px;
+	border: 1px solid #ddd;
+	border-radius: 10px;
+	display: flex;
+}
+
+.copy-text input.text {
+	padding: 10px 10px;
+	color: #000000;
+	border: none;
+	outline: none;
+}
+
+.custom-select {
+	padding: 8px;
+	color: #000000;
+	border: none;
+	outline: none;
+}
+
+.custom-select-item {
+  -webkit-appearance:none;
+  padding: 8px 0 8px 40px;
+  width:100%;
+ 
+}
+
+.copy-text button {
+	padding: 10px;
+	background: #ccc000;
+  color: #000000;
+	border: none;
+	outline: none;
+	border-radius: 10px;
+	cursor: pointer;
+}
+
+.copy-text button:active {
+	background: #809ce2;
+}
+
+.copy-text button:before {
+	content: "Copied!";
+	position: absolute;
+	top: -50px;
+	right: 0px;
+	background: #ccc000;
+  color: #000000;
+	padding: 10px 10px;
+	border-radius: 20px;
+	display: none;
+}
+
+.copy-text button:after {
+	content: "";
+	position: absolute;
+	top: -20px;
+	right: 25px;
+  height: 10px;
+	width: 10px;
+	background: #ccc000;
+  color: #000000;
+	display: none;
+  transform: rotate(45deg);
+}
+
+.copy-text.active button:before,
+.copy-text.active button:after {
+	display: block;
+}
+
+.collapsible {
+  background-color: #ccc000;
+  color: #000000;
+  cursor: pointer;
+  padding: 10px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 14px;
+  font-weight: bold;
+
+}
+
+.active, .collapsible:hover {
+  background-color: #809ce2;
+}
+
+.button {
+	padding: 10px;
+	background: #ccc000;
+  color: #000000;
+	border: none;
+	outline: none;
+	border-radius: 10px;
+	cursor: pointer;
+}
+
+.button-optional {
+	padding: 10px;
+	background: #f2f2f2;
+  color: #000000;
+	border: 2px solid #ccc000;
+	outline: none;
+	border-radius: 10px;
+	cursor: pointer;
+}
+
+.custom-checkbox {
+  position: relative;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+}
+
+input[type="checkbox"] {
+accent-color: #ccc000;
+}
+/*
+.loader {
+  border: 14px solid #ffffff; 
+  border-top: 14px solid #ccc000;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  //animation: spin 2s linear infinite;
+  text-align: center; 
+  left: 50%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+}
+*/
+.loader
+    {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            left: 25%;
+    }
+
+   
+
+.loader::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            z-index: -100;
+            bottom: -10px;
+            //background: #ccc000;
+            //background: linear-gradient(15deg, #ccc000 0%, #ccc000  11%, #ffffff 43%, #ccc000 79%, #ffffff 100%);
+            border: 14px solid #ffffff; 
+            border-top: 14px solid #ccc000;
+            border-radius: 50%;
+            transform-origin: center center;
+            animation: spin 2s linear infinite;
+    }
+
+    .loader-done
+    {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 120px;
+            height: 120px;
+            border-radius: 100%;
+            left: 25%;
+    }
+
+    .loader-done::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            z-index: -100;
+            bottom: -10px;
+            //background: #ccc000;
+            //background: linear-gradient(15deg, #ccc000 0%, #ccc000  11%, #ffffff 43%, #ccc000 79%, #ffffff 100%);
+            border: 14px solid #ccc000; 
+            border-top: 14px solid #ccc000;
+            border-radius: 100%;
+            transform-origin: center center;
+            
+    }
+
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+</style>  

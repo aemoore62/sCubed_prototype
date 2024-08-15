@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <?!= HtmlService.createHtmlOutputFromFile('style_sheet').getContent(); ?>
+</head>
+
+<body>  
+  <form>
+    <p> Select an avenue to provenance: </p>
+    <div><input type="radio" id=summaryProvenance, name="provenance" value="summary" required>summary
+    </div>
+    <div><input type="radio" id=activityProvenance, name="provenance" value="activity">activity
+    </div>
+
+    <p> Select one or more packages: </p>
+    <div><input type="checkbox" class = "custom-checkbox" id="organismItems" name="checkBox" value="organism items">organism items
+    </div>
+    <div><input type="checkbox" class = "custom-checkbox" id="CIDC" name="checkBox" value="CIDC">CIDC</div>
+    <br>
+    <input type="button" value="Configure" class = "button" onclick="google.script.run
+    .withSuccessHandler()
+    .addColumnsFromPackage(this.form);"/>
+  </form>
+  <br>
+  <br>
+    <div class="loader" id = "loader_start" style="display:none">
+      Configuring
+    
+  </div>  
+</body>
+
+</html>

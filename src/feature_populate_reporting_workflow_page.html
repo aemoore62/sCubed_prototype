@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= HtmlService.createHtmlOutputFromFile('style_sheet').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('feature_populate_reporting_workflow_js').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('feature_output_js').getContent(); ?>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  </head>
+  <body>
+    Complete the form below to populate a reporting workflow.
+    <br>
+
+    <form name="populateRptWrkflw" id="populate_rpt_wrkflw_frm">
+      <div style="display:block">
+      <br>
+      <label for="List">Select a reporting workflow:</label>
+      <br>
+      <select class="custom-select" name="reporting_Workflow" id="reportingWorkflow" onchange="displayReportingWorkflowSteps()">
+         <option value="nochange" selected disabled hidden>Select a workflow</option>
+         
+       </select>
+      <br>
+    </div>  
+
+    <div id="workflowStepsDiv" style="display:block">
+      <br>
+      <label for="List">What step do you want to stop at?</label><br>
+      <select class="custom-select" id="workflowStepDivSelect">
+         <option value="none" selected disabled hidden>Select a step</option>
+ </select>
+    </div>
+
+    <div id='userInputReportingWorkflowName' style="display:block">
+      <hr>
+      <p>Please provide names to be included in the name of the workflow instance.
+        <br>
+        <br>
+        <b>Basename</b> &emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;<b>Start</b> &emsp;&emsp;&nbsp; <b>End</b><br>
+      </p>
+
+    </div>
+
+    <div id='userCreatedIDsDiv' style="display:block">
+    </div>
+
+    <div id='done_id_input' style="display:block">
+      <br>
+      <input type="button" class="button-optional" value="Enter another workflow instance name(s)" onClick="displayUserDefinedIDFields()">
+      <p>Click the button below to create and review workflow instance IDs below.</p>
+      <input type="button" class="button" value="Create IDs" onClick="google.script.run.withSuccessHandler(displayWorkflowIDsDiv())">
+    </div>
+    <div id="autoGenID" class = "warning">
+      <p id='autoGenIDText'></p>
+    </div>
+
+    <div id="newWorkflowName" style="display:none">
+      <label for="List">Supply a name for new instance of workflow:</label><br>
+      <input id='newWorkflowName' name="list" required>
+
+    </div>
+    <hr>
+    <br>
+
+   <div id="processIDsDiv" style="display:block">
+      <input type="checkbox" class="custom-checkbox" value="true" name="autoPopulateProcessIDs" id="autoPopulateProcessIDs" onclick="displayProcessSpecificationContent()">
+      <label id="label"> Auto-populate process IDs?</label>
+ 
+
+   <div id ="processSpecificationDiv" style="display:none">
+      <br>
+      <label for="List">Select a process specification:</label>
+      <br>
+      <select class="custom-select" name="process_specification" id="processSpecification">
+         <option value="nochange" selected disabled hidden>Select a process specification</option>
+         
+       </select>
+      <br>
+    </div>  
+
+    <div>
+      <input type="checkbox" class="custom-checkbox" value="true" name="autoPopulateDate" id="autoPopulateDate">
+      
+      <label id="label"> Auto-populate start date with today's date?</label>
+
+    </div>
+    <br>
+
+    <input type="button" class="button" value="Submit" onClick="callToSetReportingWorkflowProcSpecInSheets()">
+
+    </form>  
+    
+  </body>
+</html>
+
+<script type='text/javascript'>
+  window.onload = function(){ 
+  displayUserDefinedIDFields();  
+  google.script.run.withSuccessHandler(dynamicallyPopulateLists).getList(); 
+
+  }
+
+</script>
+
+

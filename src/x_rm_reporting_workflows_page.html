@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base target="_top">
+</head>
+
+<body style="font-family:Arial">
+  <form name="subscribe" id="subscribe_frm">
+
+    <div>
+      <label id="label">What do you want to do?</label> <br>
+      <input type="radio" name="mode" value="new" name="workflowType" id="newWorkflowRadio" onClick="displayWorkflowOptions()">Begin new workflow instance
+      <br>
+      <!-- <input type="radio" name="mode" value="existing" name="workflowType" id="existingWorkflow" onClick="displayWorkflowOptions()">Enter existing workflow instance-->
+      <br>
+    </div>
+
+    <div id="loadingReportingWorkflows" style="display:none">
+      <p style="background-color:orange;">Loading reporting workflows.</p>
+
+    </div>
+
+    <div id="newWorkflowDiv" style="display:none">
+      <br>
+      <label for="List">Select a workflow:</label>
+      <select name="pets" id="newWorkflowSelect" onchange="storeInputData()">
+         <option value="nochange" selected disabled hidden>Select a workflow</option>
+       </select>
+      <br>
+      <!--<input type="checkbox" value="true" name="allWorkflows" id="allWorkflows" style="width:12px;height:12px;" onchange="setListValues()">-->
+      <!-- <label id="label" style="font-size:12px;">All reporting workflows</label> -->
+
+
+      <br>
+    </div>
+
+    <div id="existingWorkflowDiv" style="display:none">
+      <br>
+      <label for="List">Select a workflow instance:</label><br>
+      <select name="pets" id="existingWorkflowSelect" onchange="pseudo()">
+         <option value="none" selected disabled hidden>Select a workflow instance</option>
+ </select>
+      <br>
+      <input type="checkbox" value="true" name="allWorkflowInstances" id="allWorkflowInstances" style="width:12px;height:12px;" onchange="setAllActiveWorkflowInstancesListValues()">
+      <label id="label" style="font-size:12px;">All active workflow instances</label>
+    </div>
+
+    <div id="loadingReportingWorkflowSteps" style="display:none">
+      <p style="background-color:orange;">Loading steps for your reporting workflow.</p>
+
+    </div>
+
+    <div id="workflowStepsDiv" style="display:none">
+      <br>
+      <label for="List">What step do you want to stop at?</label><br>
+      <select name="pets" id="workflowStepDivSelect" onchange="displayUserDefinedIDFields()">
+         <option value="none" selected disabled hidden>Select a step</option>
+ </select>
+    </div>
+
+    <br>
+
+    <div id="processIDsDiv" style="display:none">
+      <input type="checkbox" value="true" name="autoPopulateProcessIDs" id="doAutoPopulateProcessIDs" onclick="handleProcessIDs()">
+      <label id="label"> Auto-populate process IDs?</label>
+
+    </div>
+
+    <div id="loadingProcessSpecifications" style="display:none">
+      <p style="background-color:orange;">Loading process specifications for your reporting workflow.</p>
+
+    </div>
+
+    <div id="processIDSelectDiv" style="display:none">
+      <br>
+      <select name="pets" id="processSpecificationSelect" >
+         <option value="nochange" selected disabled hidden>Select a process specification</option>
+       </select>
+
+
+      <br>
+    </div>
+
+
+    <div id="parentExistingInstance" style="display:none">
+    </div>
+
+    <div id="enterAnotherExistingInstance" style="display:none">
+      <br>
+      <input type="button" value="Enter another existing workflow" onClick="addNewWorkflowInstanceFields()">
+    </div>
+
+    <div id='userInputReportingWorkflowName' style="display:none">
+      <hr>
+      <p>Please provide names to be included in the name of the workflow instance.
+        <br>
+        <br>
+        <b>Basename</b> &emsp;&emsp;&emsp;&emsp;&nbsp;<b>Start</b> &nbsp; <b>End</b>
+      </p>
+
+    </div>
+
+    <div id='userCreatedIDsDiv' style="display:none">
+    </div>
+
+    <div id='done_id_input' style="display:none">
+      <br>
+      <input type="button" value="Enter another workflow instance name(s)" onClick="displayUserDefinedIDFields()">
+      <p>Click the button below to create and review workflow instance IDs below.</p>
+      <input type="button" style="background-color:MediumSeaGreen; border-color:MediumSeaGreen; color: white"value="Create IDs" onClick="google.script.run.withSuccessHandler(displayWorkflowIDsDiv()).getActiveUserName()">
+    </div>
+    <div id="autoGenID" style="display:none;padding: 10px; border: 1px solid black;background-color:#efefef;">
+      <p id='autoGenIDText'></p>
+    </div>
+
+    <div id="newWorkflowName" style="display:none">
+      <label for="List">Supply a name for new instance of workflow:</label><br>
+      <input id='newWorkflowName' name="list" required>
+
+    </div>
+
+    <hr>
+
+
+    <div>
+      <input type="checkbox" value="true" name="autoPopulateDate" id="doAutoPopulateDate">
+      <label id="label"> Auto-populate start date with today's date?</label>
+
+    </div>
+    <br>
+    <div>
+      <!--<input type="checkbox" value="true" name="autoPopulateInvestigator" id="doAutoPopulateInvestigator"> --?
+    <!--<label id="label"> Auto-populate investigator ID as you?</label> -->
+    </div>
+    <br>
+
+    <div id="container" />
+    </div>
+
+    <br><input type="button" style="background-color:MediumSeaGreen; border-color:MediumSeaGreen; color: white" value="Submit" onClick="test()">
+
+  </form>
+
+</body>
+
+<script type='text/javascript'>
+  window.onload = function(){ 
+  //google.script.run.withSuccessHandler(dynamicallyAddFields).getListOptions(); 
+  
+  google.script.run.withSuccessHandler(dynamicallyPopulateLists).getList(); 
+  google.script.run.withSuccessHandler(dynamicallyPopulateWorkflowInstanceList).getActiveWorkflowInstances();
+
+  }
+
+</script>
+
+<script type='text/javascript'>
+  function removeListOptions(list) {
+  const numberOfItems = list.options.length;
+
+  for (itemIndex = 1; itemIndex > 0; itemIndex++) {
+    list.remove(itemIndex);
+
+  }
+
+}
+  
+    function setListValues(){        
+    displayAllWorkflows = document.getElementById("allWorkflows").checked;
+    google.script.run.withSuccessHandler(dynamicallyPopulateLists).getList(displayAllWorkflows);
+
+      }
+
+    function setAllActiveWorkflowInstancesListValues(){
+      removeListOptions(document.getElementById("existingWorkflowSelect"));
+      displayAllWorkflows = document.getElementById("allWorkflowInstances").checked;
+      google.script.run.withSuccessHandler(dynamicallyPopulateWorkflowInstanceList).getActiveWorkflowInstances(displayAllWorkflows)
+  
+    }
+// MOD'D HERE
+// below functions loads items to drop down for reporting workflows
+  function dynamicallyPopulateLists(newWorkflowOptions){      
+  document.getElementById('loadingReportingWorkflows').style.display='none'
+  removeListOptions(document.getElementById("dynamicallyPopulateLists"));
+
+  for (newWorkflowIndex = 0; newWorkflowIndex < newWorkflowOptions.length; newWorkflowIndex++){
+  
+  if (newWorkflowOptions[newWorkflowIndex] != '' && 
+  newWorkflowOptions[newWorkflowIndex] != null && 
+  newWorkflowOptions[newWorkflowIndex] != undefined) {
+    
+    // get select element
+    var newWorkflow = document.getElementById("newWorkflowSelect");
+    // create an additional workflow
+    var newWorkflow = document.createElement("option");
+    // add option
+    newWorkflow.text = newWorkflowOptions[newWorkflowIndex];
+    newWorkflow.value = newWorkflowOptions[newWorkflowIndex];
+    newWorkflow.appendChild(newWorkflow);
+
+  } 
+    
+  }
+
+  }
+
+  function dynamicallyPopulateWorkflowInstanceList(existingWorkflows) {
+
+    for (existingWorkflowIndex = 0; existingWorkflowIndex < existingWorkflows.length; existingWorkflows++) {
+      existingWorkflows = document.getElementById("existingWorkflowSelect");
+      var newWorkflow = document.createElement("option");
+      newWorkflow.text = existingWorkflows[existingWorkflowIndex]
+      newWorkflow.value = existingWorkflows[existingWorkflowIndex]
+      newWorkflow.appendChild();
+
+    }
+
+             };
+
+function storeInputData() {
+  document.getElementById('loadingReportingWorkflowSteps').style.display='block';
+  var inputData = document.getElementById("newWorkflowSelect").value;
+  
+  google.script.run
+  .withSuccessHandler(displayWorkflowSteps)
+  .passInputData(inputData);
+
+}
+    
+function pseudo() {
+  let reportingWorkflowName = document.getElementById("existingWorkflowSelect").value;
+  
+  google.script.run
+      .withSuccessHandler(displayWorkflowSteps)
+      .getWorkflowInstanceSteps(reportingWorkflowName);   
+} 
+
+function handleProcessIDs() {
+  document.getElementById('loadingProcessSpecifications').style.display='block';
+  var checkBox = document.getElementById("doAutoPopulateProcessIDs"); 
+  var reportingWorkflowName = document.getElementById("newWorkflowSelect").value;
+
+  if (checkBox.checked === true) {
+    google.script.run
+    .withSuccessHandler(displayWorkflowProcessIDs)
+    .getProcessSpecificationNames(reportingWorkflowName);
+
+    var element = document.getElementById("processIDSelectDiv");
+    element.style.display = "block";
+  } else {
+    element.style.display = "none";
+    
+  }
+
+}
+              
+function displayWorkflowProcessIDs(workflowSteps) {  
+  document.getElementById('loadingProcessSpecifications').style.display='none';
+  removeListOptions(document.getElementById("processSpecificationSelect"));
+  var workflowSteps = [... new Set(workflowSteps)]
+
+  for (workflowStepIndex = 0; workflowStepIndex < workflowSteps.length; workflowStepIndex++) {
+    processSpecifications = document.getElementById("processSpecificationSelect");
+    var newProcssSpecification = document.createElement("option");
+    newProcssSpecification.text = workflowSteps[workflowStepIndex];
+    newProcssSpecification.value = workflowSteps[workflowStepIndex];
+    processSpecifications.appendChild(newProcssSpecification);
+    
+  }
+  
+};      
+
+function displayWorkflowSteps(workflowSteps) { 
+  document.getElementById('loadingReportingWorkflowSteps').style.display='none';   
+  removeListOptions(document.getElementById("workflowStepDivSelect"));
+
+  for (j=0; j < workflowSteps.length;j++){
+      daySelect = document.getElementById("workflowStepDivSelect");
+      var newOption = document.createElement("option");
+      newOption.text = workflowSteps[j];
+      newOption.value = workflowSteps[j];
+      daySelect.appendChild(newOption);
+
+    
+  }
+  //document.getElementById("instancesDiv").style.display = 'block';
+  let beginNewWorkflow = document.getElementById("newWorkflowRadio").checked; 
+if (beginNewWorkflow) {
+   //document.getElementById("instancesDiv").style.display = 'block';
+   document.getElementById("processIDsDiv").style.display = 'block';
+  //document.getElementById("processIDSelectDiv").style.display = 'block'; 
+
+} else {
+  document.getElementById("enterAnotherExistingInstance").style.display = 'block';  
+  
+}
+  document.getElementById("workflowStepsDiv").style.display = 'block';  
+  document.getElementById("displayWorkflowSteps").style.display = 'block';
+  //document.getElementById('loadingReportingWorkflowSteps').style.display='none';
+
+  
+};
+
+function displayWorkflowStepsForAdditionalInstances(workflowSteps) {
+  // ask for step
+  existingWorkflowInstance = document.getElementById("parentExistingInstance");    
+  existingWorkflowInstance.appendChild(document.createElement("br"));
+  label = document.createElement("label");
+  labelText = document.createTextNode("What step do you want to stop at for now?");
+  label.appendChild(labelText);
+
+  // handle step
+  existingWorkflowInstance.appendChild(label); 
+  existingWorkflowInstance.appendChild(document.createElement("br"));    
+  workflowStepSelect = document.getElementById("workflowStepDivSelect");
+  step = workflowStepSelect.cloneNode(false)
+  
+  // need length
+  element = document.getElementById("parentExistingInstance");
+  numberOfChildren = element.getElementsByTagName('*').length + 1
+  
+  // append
+  step.setAttribute("id", "input_"+numberOfChildren);  
+  step.classList.add("anotherWorkflowInstanceStep");       
+  existingWorkflowInstance.appendChild(step);
+  existingWorkflowInstance.appendChild(document.createElement("br"));
+  
+  // include list options
+  for (workflowIndex = 0; workflowIndex < workflowSteps.length; workflowIndex++) {
+    child = document.getElementById("input_"+numberOfChildren);
+    var newStep = document.createElement("option");
+    newStep.text = workflowSteps[workflowIndex];
+    newStep.value = workflowSteps[workflowIndex];
+    child.appendChild(newStep);
+    
+  }
+
+  document.getElementById("input_"+numberOfChildren).selectedIndex = 0;
+  let beginNewWorkflow = document.getElementById("newWorkflowRadio").checked; 
+
+  if (beginNewWorkflow) {
+    document.getElementById("enterAnotherExistingInstance").style.display = 'block';
+
+  } else {
+    document.getElementById("workflowStepsDiv").style.display = 'block';  
+    document.getElementById("displayWorkflowSteps").style.display = 'block';
+
+  }
+  
+};
+</script>
+
+<script>
+  function displayWorkflowIDsDiv(activeUserName) {
+  // get user-defined IDs
+  var values = [];
+  var ids = document.getElementsByClassName("userDefinedID_base"); 
+  let workflowName = document.getElementById("newWorkflowSelect").value; 
+  document.getElementById("autoGenIDText").innerHTML = ids;
+
+  // date to append to name
+  let newDate = new Date()
+  let date = newDate.toISOString().split('T')[0]
+  let timeWithZone = newDate.toISOString().split('T')[1]
+  let timeWithoutZone = timeWithZone.split('.').shift()
+  let dateTime = date+' '+timeWithoutZone
+  var currentRowValues = [];
+  var currentBatchValues = [];  
+ 
+  for (idIndex = 0; idIndex < ids.length; idIndex++) {    
+    document.getElementById("autoGenIDText").innerHTML = values;
+    var term = document.getElementsByClassName('userDefinedID_base')[idIndex].value;   
+    var start = document.getElementsByClassName('userDefinedID_start')[idIndex].value;
+    var end = document.getElementsByClassName('userDefinedID_end')[idIndex].value;
+
+    for (userDefinedSuffixIndex = start; userDefinedSuffixIndex <= end; userDefinedSuffixIndex++) {
+      currentRowValues = [];
+      // make id
+      var base = term.concat(userDefinedSuffixIndex);
+      var instanceID = base.concat(","+workflowName+","+dateTime)     
+      values.push(instanceID);
+
+      // push all values into one row for single ID
+      currentRowValues.push(base);
+      currentRowValues.push(workflowName);
+      currentRowValues.push(dateTime);
+      currentRowValues.push(activeUserName);
+      currentRowValues.push(1);   
+
+      // push all ids into one array
+      currentBatchValues.push(currentRowValues); 
+    }
+
+  }        
+  
+  document.getElementById("autoGenIDText").innerHTML = values.join('<br> ');
+  document.getElementById("autoGenID").style.display = 'block'
+ 
+};
+
+
+function displayUserDefinedIDFields() {
+  // add new div to existing div to display ids
+  parentDiv = document.getElementById("userCreatedIDsDiv");  
+  newDiv = document.createElement("div");
+  newDiv.setAttribute("id", "inputChild");
+  parentDiv.appendChild(newDiv);
+  let numberInstances = 1   
+  let beginNewWorkflow = document.getElementById("newWorkflowRadio").checked; 
+
+  if (beginNewWorkflow) {
+    for (userDefinedIDIndex = 0; userDefinedIDIndex < numberInstances; userDefinedIDIndex++) {
+      parentDiv = document.getElementById("userCreatedIDsDiv");
+
+      // make label
+      label = document.createElement("label");
+      let workflowInstanceNumber = userDefinedIDIndex+1
+      label.setAttribute("id", "userID"+workflowInstanceNumber);
+      
+      // basename field
+      baseNameInput = document.createElement("input");
+      baseNameInput.setAttribute("id", "input_"+userDefinedIDIndex);   
+      baseNameInput.classList.add("userDefinedID_base");       
+      parentDiv.appendChild(baseNameInput);
+      parentDiv.appendChild(document.createTextNode("\u0009"));
+      
+      // start field
+      startField = document.createElement("input");
+      startField.setAttribute("id", "start_"+userDefinedIDIndex);   
+      startField.classList.add("userDefinedID_start");   
+      startField.setAttribute("size","4");    
+      parentDiv.appendChild(startField);
+      parentDiv.appendChild(document.createTextNode("\u0009"));
+      
+      // end field
+      endField = document.createElement("input");
+      endField.setAttribute("id", "end_"+userDefinedIDIndex);   
+      endField.classList.add("userDefinedID_end");   
+      endField.setAttribute("size","4");        
+      parentDiv.appendChild(endField);
+      parentDiv.appendChild(document.createElement("br"));
+  }
+  
+  //document.getElementById("instancesDiv").style.display = 'block';   
+  document.getElementById("userInputReportingWorkflowName").style.display = 'block'; 
+  document.getElementById("userCreatedIDsDiv").style.display = 'block'; 
+  document.getElementById("done_id_input").style.display = 'block';
+
+    }
+
+  }
+
+</script>
+
+<script>
+  function addNewWorkflowInstanceFields() {
+    // add child div
+    parentDiv = document.getElementById("parentExistingInstance");  
+    childDiv = document.createElement("div");
+    childDiv.setAttribute("id", "inputChild");
+    parentDiv.appendChild(childDiv);
+    
+    // label
+    parentDiv = document.getElementById("parentExistingInstance");
+    label = document.createElement("label");
+    labelText = document.createTextNode("Select a workflow instance");
+    parentDiv.appendChild(document.createElement("hr"));
+    label.appendChild(labelText);
+    parentDiv.appendChild(label); 
+    parentDiv.appendChild(document.createElement("br"));
+    
+    // workflows
+    existingWorkflow = document.getElementById("existingWorkflowSelect");
+    workflows = existingWorkflow.cloneNode(false)
+    workflows.innerHTML = workflows.innerHTML+existingWorkflow.innerHTML;
+
+    // update list with steps
+    workflows.setAttribute("onchange","google.script.run.withSuccessHandler(displayWorkflowStepsForAdditionalInstances).getListSteps()")
+    workflows.classList.add("anotherWorkflowInstance");       
+    existingWorkflow.appendChild(workflows);
+    existingWorkflow.appendChild(document.createElement("br"));
+    
+    document.getElementById("parentExistingInstance").style.display = 'block'; 
+  
+  
+}
+  
+</script>
+
+<script type='text/javascript'>
+  function displayWorkflowOptions() {
+  
+  if (document.getElementById("newWorkflowRadio").checked) {
+    //document.getElementById('loadingReportingWorkflows').style.display='block'
+    document.getElementById("existingWorkflowDiv").style.display = 'none';
+    document.getElementById("newWorkflowName").style.display = 'none';
+    document.getElementById("parentExistingInstance").style.display = 'none';
+    document.getElementById("newWorkflowDiv").style.display = 'block';
+    document.getElementById("workflowStepsDiv").style.display = 'none';
+    document.getElementById("enterAnotherExistingInstance").style.display = 'none';    
+    document.getElementById("newWorkflowSelect").selectedIndex = 0;
+    document.getElementById("workflowStepDivSelect").selectedIndex = 0;
+    document.getElementById("parentExistingInstance").innerHTML = '';
+     
+    
+  } else if (document.getElementById("existingWorkflow").checked) {
+    document.getElementById("existingWorkflowDiv").style.display = 'block';
+    document.getElementById("newWorkflowDiv").style.display = 'none';
+    document.getElementById("newWorkflowName").style.display = 'none';
+    //document.getElementById("instancesDiv").style.display = 'none';
+    document.getElementById("userInputReportingWorkflowName").style.display = 'none';
+    document.getElementById("userCreatedIDsDiv").style.display = 'none';
+    document.getElementById("done_id_input").style.display = 'none';
+    document.getElementById("autoGenID").style.display = 'none'; 
+
+    document.getElementById("newWorkflowSelect").selectedIndex = 0;
+    document.getElementById("workflowStepDivSelect").selectedIndex = 0;    
+    document.getElementById("existingWorkflowSelect").selectedIndex = 0;  
+    document.getElementById("allWorkflows").checked = false;
+    //document.getElementById("numberNewInstances").value = '';
+    document.getElementById("userCreatedIDsDiv").innerHTML = '';
+    document.getElementById("autoGenID").innerHTML = '';    
+    
+  }
+}
+   
+</script>
+
+<script>
+  function test() {
+    var workflowInstanceIDsSplit = document.getElementById("existingWorkflowSelect").value;    
+    //document.getElementById("autoGenIDText").innerHTML = workflowInstanceIDsSplit;
+    if (workflowInstanceIDsSplit == "none") {         
+      var workflowInstanceIDs = document.getElementById("autoGenIDText").innerHTML;    
+      var workflowInstanceIDsSplit = workflowInstanceIDs.split("<br> ");
+      //var workflowName = document.getElementById("newWorkflowSelect").value;
+      var numberInstances= workflowInstanceIDsSplit.length
+
+    } else {      
+      var workflowInstanceIDsSplit = [document.getElementById("existingWorkflowSelect").value]; 
+      var element = document.getElementById("addNewWorkflowInstanceFields");
+      document.getElementById("container").innerHTML = "hello"
+      var numberOfChildren  = document.getElementsByClassName("anotherWorkflowInstance").length; 
+      document.getElementById("container").innerHTML = "numberOfChildren: "+numberOfChildren
+      var numberInstances= numberOfChildren+1;
+
+    }
+    
+    // Get process types for steps
+    var lastStep = document.getElementById("workflowStepDivSelect").value;    
+   //var populateInvestigator = document.getElementById("doAutoPopulateInvestigator").checked
+    var populateDate = document.getElementById("doAutoPopulateDate").checked
+    //  let optionNames = [...selectElement.options].map(o => o.text);
+    var workflowStepOptions = document.getElementById('workflowStepDivSelect').options;
+    
+     var allSteps = [];
+     for (var i = 1; i < workflowStepOptions.length; i++) { // start at 1 to skip default value
+         allSteps.push(workflowStepOptions[i].value) 
+      }
+    
+    var stopIndex = allSteps.indexOf(lastStep);
+    var instanceSteps = [];
+    var stepNumbers = [];    
+    for (var i = 0;i< stopIndex+1; i++) {
+      let stepNumberProcessType = allSteps[i]
+      let processType = stepNumberProcessType.split(',')[1];
+      let stepNumber = stepNumberProcessType.split(',')[0];
+      instanceSteps.push([processType]);
+      stepNumbers.push([stepNumber]);
+    }
+
+    // Get process IDs for steps       
+    var populateProcessIDs = document.getElementById("doAutoPopulateProcessIDs").checked
+    if (populateProcessIDs) {
+      var processSpecificationName = document.getElementById("processSpecificationSelect").value; 
+   
+    }
+    
+    //document.getElementById("autoGenIDText").innerHTML = "workflowInstanceIDs: "+workflowInstanceIDs;
+
+       google.script.run
+      .withSuccessHandler(google.script.host.close)
+      .otherStuff(workflowInstanceIDsSplit,instanceSteps,stepNumbers,numberInstances,populateDate,processSpecificationName );   //populateInvestigator,
+
+  };
+
+</script>

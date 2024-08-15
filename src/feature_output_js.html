@@ -1,0 +1,40 @@
+<script type='text/javascript'>
+  function displayOutputOptions() {
+  
+  if (document.getElementById("outputType").value === "plain text") {
+    document.getElementById("labelFreeText").style.display = 'block';   
+    document.getElementById("outputFreeText").style.display = 'block'; 
+    document.getElementById("labelSteps").style.display = 'block';   
+    document.getElementById("outputSteps").style.display = 'block';  
+    
+  } 
+
+}
+
+</script>
+
+
+<script type='text/javascript'>
+  function handlePlainText() {
+
+  var processSpecificationName = document.getElementById("processSpecification").value;
+  google.script.run
+    .withSuccessHandler(populatePlainText)
+    .getPlainTextMethods(processSpecificationName);
+
+
+}
+
+function populatePlainText(plainText) {
+  //let plainText = getPlainTextMethods(processSpecificationName);
+  let freeText = plainText[0];
+  let stepsText = plainText[1];
+  let freeTextField = document.getElementById("outputFreeTextField");
+  let stepsField = document.getElementById("outputStepsField");
+
+  freeTextField.value = freeText;
+  stepsField.value  = stepsText;
+  
+}
+
+</script>
